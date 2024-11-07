@@ -31,10 +31,11 @@ def remove_code_blocks(text):
 
 def pre_process():
     # 读取文章数据并进行分词
-    article = get_articles()
-    processed_article = []
-    for item in article:
+    articles = get_articles()
+    processed_articles = []
+    for item in articles:
         # 去掉代码块
         processed_item = remove_code_blocks(item[2])
-        processed_article.append(cut_words(processed_item))
-    return processed_article
+        processed_articles.append(cut_words(processed_item))
+    # 这里都返回一下，方便id的使用
+    return processed_articles, articles
