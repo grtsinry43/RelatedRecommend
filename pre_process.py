@@ -39,3 +39,14 @@ def pre_process():
         processed_articles.append(cut_words(processed_item))
     # 这里都返回一下，方便id的使用
     return processed_articles, articles
+
+def pre_process_single_article(article):
+    """
+    预处理单篇文章
+    :param article: 包含文章内容的字符串
+    :return: 预处理后的分词结果
+    """
+    # 去掉代码块
+    processed_article = remove_code_blocks(article)
+    # 分词并去掉停用词
+    return cut_words(processed_article)

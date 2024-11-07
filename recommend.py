@@ -47,5 +47,5 @@ def recommend_by_article_id(article_id, k=5):
     # 获取推荐的文章ID，排除自身
     recommended_ids = [article_vectors[i]['id'] for i in indices[0] if article_vectors[i]['id'] != article_id]
 
-    # 返回前k个推荐结果
-    return recommended_ids[:k]
+    # 返回前k个推荐结果，并且转换为字符串类型避免 JSON 序列化问题
+    return [str(article_id) for article_id in recommended_ids[:k]]
