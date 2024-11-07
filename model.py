@@ -10,15 +10,15 @@ class ArticleForm(BaseModel):
 
 class ApiResponse(BaseModel):
     code: int
-    message: str
+    msg: str
     data: Dict
 
     @staticmethod
     def success(data: Dict):
-        response = ApiResponse(code=0, message="", data=data)
+        response = ApiResponse(code=0, msg="", data=data)
         return response
 
     @staticmethod
     def error(code: int, message: str):
-        response = ApiResponse(code=code, message=message, data={})
+        response = ApiResponse(code=code, msg=message, data={})
         return response

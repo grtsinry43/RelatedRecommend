@@ -1,0 +1,9 @@
+matplotlib~=3.9.2
+numpy~=1.26.4
+uvicorn~=0.32.0
+fastapi~=0.115.4
+pymongo~=4.10.1
+pydantic~=2.9.2
+gensim~=4.3.3
+PyMySQL~=1.1.1
+jieba~=0.42.1
