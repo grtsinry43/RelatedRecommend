@@ -1,4 +1,6 @@
 import pymysql
+from pymongo import MongoClient
+
 import cfg as cfg
 
 # 从数据库读取所有文章数据

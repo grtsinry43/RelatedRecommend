@@ -7,8 +7,10 @@ from cfg import app_port
 from get_data import get_article_by_id
 from model import ArticleForm, ApiResponse
 from pre_process import pre_process_single_article
-from recommend import recommend_by_article_id
-from save import seed_mongo, get_processed_article_by_id, add_article_vector, update_article_vector
+from recommend import recommend_by_article_id, recommend_by_user_id
+from save import seed_mongo, get_processed_article_by_id, add_article_vector, update_article_vector, \
+    process_and_save_all_user_interest_vector, get_user_behavior_by_user_id, process_and_save_user_interest_vector, \
+    get_user_interest_vector
 from train import transform_single_article_to_vector, get_model_status
 
 app = FastAPI()
@@ -60,9 +62,27 @@ async def get_recommendation(article_id: int, count: int = 5):
     })
 
 
+@app.get("/user/{user_id}")
+async def get_user_recommendation(user_id: str, count: int = 5):
+    # 检查一下有没有这个用户的行为数据
+    user_behavior = get_user_interest_vector(user_id)
+    if user_behavior is None:
+        return ApiResponse.error(404, "用户" + str(user_id) + "不存在")
+    # 更新一下用户的兴趣向量
+    process_and_save_user_interest_vector(user_id)
+
+    # 这里得到的是一个列表，是所有的文章id
+    return ApiResponse.success({
+        'user_id': str(user_id),
+        'recommendation': recommend_by_user_id(user_id, count),
+    })
+
+
 async def main():
     # 这里首先调用 seed_mongo 函数，将数据导入到 MongoDB 中，完成之后才能启用 FastAPI 服务
     await seed_mongo()
+    # 读取用户行为数据，并将其转换为用户向量
+    await process_and_save_all_user_interest_vector()
 
 
 if __name__ == '__main__':
