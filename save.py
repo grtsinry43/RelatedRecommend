@@ -42,9 +42,13 @@ def update_article_vector(article_id, vector):
     collection.update_one({'id': article_id}, {'$set': {'vector': vector.tolist()}})
 
 
+def delete_article_vector(article_id):
+    collection.delete_one({'id': article_id})
+
+
 # 从mongo数据库根据用户ID读取用户行为数据
 def get_user_behavior_by_user_id(user_id):
-    user_behavior = collection_behavior.find_one({'id': user_id}, {'_id': 0})
+    user_behavior = collection_behavior.find_one({'userId': user_id}, {'_id': 0})
     return user_behavior
 
 
@@ -64,7 +68,7 @@ def get_weight_by_type(behavior_type, value=0):
 
 
 def get_user_behaviors(user_id):
-    return list(collection_behavior.find({'id': user_id}, {'_id': 0}))
+    return list(collection_behavior.find({'userId': user_id}, {'_id': 0}))
 
 
 def calculate_user_interest_vector(user_id):
@@ -115,7 +119,7 @@ def process_and_save_user_interest_vector(user_id: int):
 
 # 提供一个用于全局初始化的函数，将所有的用户行为数据转换为用户向量并保存
 async def process_and_save_all_user_interest_vector():
-    user_ids = collection_behavior.distinct('id')
+    user_ids = collection_behavior.distinct('userId')
     for user_id in user_ids:
         process_and_save_user_interest_vector(user_id)
     print('已处理并保存所有用户向量，共计', len(user_ids), '个用户')

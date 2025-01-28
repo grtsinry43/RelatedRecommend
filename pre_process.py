@@ -24,7 +24,7 @@ def cut_words(sentence):
 
 
 def remove_code_blocks(text):
-    # 使用正则表达式去掉文章中的代码块
+    # 使用正则表达式去掉文章中的代码块 /
     code_block_pattern = r'```.*?```'
     return re.sub(code_block_pattern, '', text, flags=re.DOTALL)
 

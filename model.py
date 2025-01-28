@@ -3,7 +3,7 @@ from typing import Dict
 
 
 class ArticleForm(BaseModel):
-    id: int
+    id: str
     title: str
     content: str
 
