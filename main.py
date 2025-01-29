@@ -88,6 +88,7 @@ async def get_user_recommendation(user_id: str, count: int = 5):
     # 检查一下有没有这个用户的行为数据
     user_behavior = get_user_interest_vector(user_id)
     if user_behavior is None:
+        process_and_save_user_interest_vector(user_id)
         return ApiResponse.error(404, "用户" + str(user_id) + "不存在")
     # 更新一下用户的兴趣向量
     process_and_save_user_interest_vector(user_id)

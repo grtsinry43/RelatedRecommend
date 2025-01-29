@@ -128,7 +128,7 @@ async def process_and_save_all_user_interest_vector():
 def get_user_interest_vector(user_id):
     user_vector = collection_user_vectors.find_one({'user_id': user_id}, {'_id': 0, 'vector': 1})
     if user_vector is None:
-        raise ValueError(f"User ID {user_id} not found")
+        return None
     return np.array(user_vector['vector']).astype('float32')
 
 
