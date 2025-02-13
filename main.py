@@ -110,4 +110,4 @@ async def main():
 if __name__ == '__main__':
     asyncio.run(main())
     print("> 启动 FastAPI 服务")
-    uvicorn.run(app, host="127.0.0.1", port=app_port if app_port else 8000)
+    uvicorn.run(app, host="0.0.0.0", port=app_port if app_port else 8000)
