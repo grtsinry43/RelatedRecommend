@@ -77,9 +77,11 @@ def calculate_user_interest_vector(user_id):
     weights_sum = 0
 
     for behavior in user_behaviors:
-        article_vector = get_processed_article_by_id(int(behavior['articleId']))
-        if article_vector:
-            article_vector = article_vector[0]
+        article_vector_cursor = get_processed_article_by_id(int(behavior['articleId']))
+        # 将游标转换为列表并检查是否有数据
+        article_vector_list = list(article_vector_cursor)
+        if article_vector_list:
+            article_vector = article_vector_list[0]
             weight = get_weight_by_type(behavior['type'], behavior.get('value', 0))
 
             # 添加时间衰减系数
@@ -89,9 +91,18 @@ def calculate_user_interest_vector(user_id):
             weighted_vector = np.array(article_vector['vector']) * weight * decay_factor
             user_behavior_vectors.append(weighted_vector)
             weights_sum += weight * decay_factor
+        else:
+            print(f"警告: 用户 {user_id} 的行为数据中引用的文章 {behavior['articleId']} 不存在")
 
     # 获取所有文章向量
     article_vectors = get_article_vectors()
+    
+    # 检查是否有文章向量数据
+    if not article_vectors:
+        print(f"警告: 没有找到任何文章向量数据，无法为用户 {user_id} 计算兴趣向量")
+        # 返回一个默认的零向量，维度为768（BERT标准维度）
+        return np.zeros(768, dtype='float32')
+    
     mean_article_vector = np.mean([article['vector'] for article in article_vectors], axis=0)
 
     if user_behavior_vectors:

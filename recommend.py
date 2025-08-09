@@ -18,12 +18,23 @@ def recommend_by_article_id(article_id, k=5):
     # 取出所有文章向量
     article_vectors = get_article_vectors()
 
+    # 检查是否有文章向量数据
+    if not article_vectors:
+        print(f"警告: 没有找到任何文章向量数据，文章 {article_id} 无法获得推荐")
+        return []
+
+    # 检查文章数量是否足够生成推荐
+    if len(article_vectors) <= 1:
+        print(f"警告: 文章数量不足，无法为文章 {article_id} 生成推荐")
+        return []
+
     # 将向量转换为 numpy 数组
     vectors = np.array([article['vector'] for article in article_vectors]).astype('float32')
 
     # 确保向量数组不为空
     if vectors.size == 0:
-        raise ValueError("Vectors array is empty")
+        print(f"警告: 向量数组为空，文章 {article_id} 无法获得推荐")
+        return []
 
     # 构建索引
     dimension = vectors.shape[1]
@@ -38,7 +49,8 @@ def recommend_by_article_id(article_id, k=5):
             break
 
     if target_vector is None:
-        raise ValueError(f"Article ID {article_id} not found")
+        print(f"警告: 文章ID {article_id} 未找到")
+        return []
 
     # 将目标向量转换为 numpy 数组
     target_vector = np.array([target_vector]).astype('float32')
@@ -75,12 +87,24 @@ def recommend_by_user_id(user_id, k=5):
     # 取出所有文章向量
     article_vectors = get_article_vectors()
 
+    # 检查是否有文章向量数据
+    if not article_vectors:
+        print(f"警告: 没有找到任何文章向量数据，用户 {user_id} 无法获得推荐")
+        return []
+
+    # 检查文章数量是否足够生成推荐
+    if len(article_vectors) < k:
+        print(f"警告: 文章数量不足，无法为用户 {user_id} 生成足够的推荐")
+        # 返回所有可用的文章
+        return [str(article['id']) for article in article_vectors]
+
     # 将向量转换为 numpy 数组
     vectors = np.array([article['vector'] for article in article_vectors]).astype('float32')
 
     # 确保向量数组不为空
     if vectors.size == 0:
-        raise ValueError("Vectors array is empty")
+        print(f"警告: 向量数组为空，用户 {user_id} 无法获得推荐")
+        return []
 
     # 获取用户已经看过的文章ID列表及其行为时间
     user_behaviors = get_user_behaviors(user_id)
